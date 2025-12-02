@@ -11,10 +11,10 @@
 		{% if page.css %}
 		{% if page.css.first %}
 		{% for filepath in page.css %}
-		<link rel="stylesheet" href="{{ filepath }}">
+		<link rel="stylesheet" href="{{ filepath | relative_url }}">
 		{% endfor %}
 		{% else %}
-		<link rel="stylesheet" href="{{ page.css }}">
+		<link rel="stylesheet" href="{{ page.css | relative_url }}">
 		{% endif %}
 		{% endif %}
 	</head>
