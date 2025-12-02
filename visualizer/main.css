@@ -1,0 +1,40 @@
+
+/* フォームエリアの余白 (固有ID) */
+#nazotet-form {
+    padding: 20px;
+}
+
+/* ビジュアライザ固有設定 (JS依存・固有ID) */
+#visualizer-wrapper {
+    overflow: auto;
+    max-width: 100%;
+    border: 2px dashed #ccc;
+    padding: 20px;
+    display: flex;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+#visualizer {
+    width: 440px;
+    height: 560px;
+    margin: auto;
+    flex-shrink: 0;
+    
+    min-width: 440px;
+    min-height: 560px;
+    
+    background-color: #fff;
+}
+
+/* ページ固有のレスポンシブ対応 */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    #nazotet-form {
+        padding: 15px;
+    }
+    
+}

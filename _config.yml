@@ -1,0 +1,4 @@
+title: Nazotet Tools
+baseurl: ""
+url: "http://localhost:4000"
+exclude: [Gemfile, Gemfile.lock]

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Nazotet Visualizer</title>
+
+		<link rel="stylesheet" href="/nazotet-tools/base.css">
+		<link rel="stylesheet" href="/nazotet-tools/components.css">
+
+		
+		
+		<link rel="stylesheet" href="/visualizer/main.css">
+		
+		
+	</head>
+	<body>
+
+		<main>
+			<h1>Nazotet Visualizer</h1>
+
+<div id="form-container"></div>
+
+<div id="controls" style="margin-top: 1em;">
+	<button type="button" id="btn-visualize"
+		class="btn btn-primary">Visualize</button>
+	<button type="button" id="btn-svg"
+		class="btn btn-secondary">Image Download (svg)</button>
+	<button type="button" id="btn-png"
+		class="btn btn-secondary">Image Download (png)</button>
+</div>
+
+<div id="visualizer-wrapper">
+	<div id="visualizer"></div>
+</div>
+
+<script src="/nazotet-tools/js/fumen-parser.js"></script>
+<script src="/nazotet-tools/js/nazotet-form.js"></script>
+<script src="/nazotet-tools/js/nazotet-drawer.js"></script>
+
+<script>
+function timeStampString() {
+	const now = new Date();
+	return `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}${now.getSeconds().toString().padStart(2, '0')}`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+	if (typeof NazotetForm === 'undefined' || typeof NazotetDrawer === 'undefined') {
+		console.error('Required classes are not loaded.');
+		return;
+	}
+
+	// 1. フォームと描画クラスの初期化
+	const nazotetForm = new NazotetForm('form-container');
+	const nazotetDrawer = new NazotetDrawer('visualizer');
+
+	// 2. 処理ロジックの定義
+	const handleVisualize = () => {
+		nazotetForm.autoComplete();
+		if (nazotetForm.isValid()) {
+			const config = nazotetForm.getConfig();
+			nazotetDrawer.draw(config);
+		}
+	};
+
+	// 3. ボタンへのイベント登録
+	const btnVisualize = document.getElementById('btn-visualize');
+	if (btnVisualize) {
+		btnVisualize.addEventListener('click', handleVisualize);
+	}
+
+	const btnSvg = document.getElementById('btn-svg');
+	if (btnSvg) {
+		btnSvg.addEventListener('click', () => {
+			// まず最新状態で描画更新（オプション）
+			handleVisualize();
+
+			const svgString = nazotetDrawer.getSvgString();
+			const dataUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+			const link = document.createElement('a');
+			link.href = dataUrl;
+			link.download = `nazotet_${timeStampString()}.svg`;
+			link.click();
+		});
+	}
+
+	const btnPng = document.getElementById('btn-png');
+	if (btnPng) {
+		btnPng.addEventListener('click', () => {
+			// まず最新状態で描画更新（オプション）
+			handleVisualize();
+
+			const svgString = nazotetDrawer.getSvgString();
+			const { width, height } = nazotetDrawer.getSize();
+			const svgDataUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+
+			const img = new Image();
+			img.onload = () => {
+				const scale = 2;
+				const canvas = document.createElement('canvas');
+				canvas.width = width * scale;
+				canvas.height = height * scale;
+				const ctx = canvas.getContext('2d');
+				ctx.scale(scale, scale);
+				ctx.drawImage(img, 0, 0);
+				const pngDataUrl = canvas.toDataURL('image/png');
+				const link = document.createElement('a');
+				link.href = pngDataUrl;
+				link.download = `nazotet_${timeStampString()}.png`;
+				link.click();
+			};
+			img.src = svgDataUrl;
+		});
+	}
+
+	// 初回自動実行
+	handleVisualize();
+});
+</script>
+
+		</main>
+
+	</body>
+</html>

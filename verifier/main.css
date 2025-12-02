@@ -1,0 +1,140 @@
+/* フォームエリアの余白 (固有ID) */
+#nazotet-form {
+    padding: 20px;
+}
+
+/* メインコンテナ: インラインスタイルから移動 */
+#game-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: flex-start; /* 上端揃え */
+	gap: 1rem;
+	padding: 1rem;
+	margin: 0 auto;
+	max-width: 800px;
+}
+
+/* サイドパネル（縦並び用） */
+.side-panel {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+/* 各パネルの黒背景ボックス */
+.panel-box {
+	background-color: #111827;
+	text-align: center;
+	padding: 4px;
+	width: auto;
+}
+
+/* ラベルテキスト */
+.panel-label {
+	color: #fff;
+	font-size: 15px;
+	margin: 2px;
+	font-family: monospace;
+}
+
+.panel-caption {
+    margin-top: 5px;
+    text-align: left;
+    display: inline-block;
+}
+
+.panel-str {
+    color: #fff;
+    font-size: 10px;
+    margin: 0;
+    font-family: monospace;
+    line-height: 1.4;
+}
+
+/* サブキャンバス (Hold/Next) */
+.sub-canvas {
+	display: block;
+	background-color: #000;
+	margin: 5px auto 10px auto;
+}
+
+/* メインキャンバス */
+.main-canvas {
+	display: block;
+	border: 4px solid #333;
+	background-color: #000;
+}
+
+:root {
+	--btn-gap: 5px;
+	--btn-size: clamp(30px, 12vw, 50px);
+}
+
+#action-btns {
+	padding: var(--btn-gap);
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: var(--btn-gap);
+	background-color: #4d525d;
+}
+
+.action-btns-sp {
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--btn-gap);
+}
+
+.btn-action-sm,
+.btn-action {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--btn-size);
+	padding: 0;
+	margin: 0;
+}
+
+.btn-action-sm {
+	height: var(--btn-size);
+}
+
+.btn-action {
+	height: calc(var(--btn-size) * 2 + var(--btn-gap));
+}
+
+#btn-hold {
+	background-color: #9333ea;
+}
+
+#btn-hard {
+	background-color: #eab308;
+}
+
+#btn-undo,
+#btn-redo,
+#btn-left,
+#btn-right,
+#btn-down {
+	background-color: #374151;
+}
+
+#btn-rotate-r,
+#btn-rotate-l {
+	background-color: #2563eb;
+}
+
+/* ページ固有のレスポンシブ対応 */
+@media (max-width: 600px) {
+	body {
+		padding: 10px;
+	}
+
+	#nazotet-form {
+		padding: 15px;
+	}
+
+}

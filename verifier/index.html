@@ -1,0 +1,204 @@
+---
+layout: default
+title: Nazotet Verifier
+css: /verifier/main.css
+---
+<h1>Nazotet Verifier</h1>
+<div id="form-container"></div>
+<div id="controls" style="margin-top: 1em;">
+	<button type="button" id="btn-verify" class="btn btn-primary">Verify</button>
+</div>
+<div id="game-container">
+	<div class="side-panel">
+		<div class="panel-box">
+			<div class="panel-label">Hold</div>
+			<canvas id="hold-canvas" class="sub-canvas"></canvas>
+		</div>
+		<div class="panel-box">
+			<div class="panel-label">Keys</div>
+			<div class="panel-caption">
+				<p class="panel-str">LR: Move</p>
+				<p class="panel-str">DN: SoftDrop</p>
+				<p class="panel-str">SP: HardDrop</p>
+				<p class="panel-str">UP: Rotate R</p>
+				<p class="panel-str">Z : Rotate L</p>
+				<p class="panel-str">C : Hold</p>
+				<p class="panel-str">U : Undo</p>
+				<p class="panel-str">I : Redo</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="board-container">
+		<canvas id="game-canvas" class="main-canvas"></canvas>
+	</div>
+
+	<div class="side-panel">
+		<div class="panel-box">
+			<div class="panel-label">Next</div>
+			<canvas id="next-canvas" class="sub-canvas"></canvas>
+			<div id="next-queue-text" class="panel-label"> </div>
+		</div>
+		<div class="panel-box">
+			<div class="panel-label">Result</div>
+			<div class="panel-caption">
+				<p id="result" class="panel-str"></p>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<div id="action-btns">
+	<button type="button" id="btn-hold" class="btn btn-action">Hold</button>
+	<button type="button" id="btn-left" class="btn btn-action">←</button>
+	<div class="action-btns-sp">
+		<button type="button" id="btn-hard" class="btn btn-action-sm">Drop</button>
+		<button type="button" id="btn-down" class="btn btn-action-sm">↓</button>
+	</div>
+	<button type="button" id="btn-right" class="btn btn-action">→</button>
+	<button type="button" id="btn-rotate-l" class="btn btn-action">↺</button>
+	<button type="button" id="btn-rotate-r" class="btn btn-action">↻</button>
+	<div class="action-btns-sp">
+		<button type="button" id="btn-undo" class="btn btn-action-sm">Undo</button>
+		<button type="button" id="btn-redo" class="btn btn-action-sm">Redo</button>
+	</div>
+</div>
+
+<script src="{{ '/js/fumen-parser.js' | relative_url}}"></script>
+<script src="{{ '/js/nazotet-form.js' | relative_url}}"></script>
+<script src="{{ '/js/nazotet-game.js' | relative_url}}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+	if (typeof NazotetForm === 'undefined' || typeof NazotetGame === 'undefined') {
+		console.error('Required classes are not loaded.');
+		return;
+	}
+	const elements = {
+		gameContainer: document.getElementById('game-container'),
+		canvas: document.getElementById('game-canvas'),
+		holdCanvas: document.getElementById('hold-canvas'),
+		nextCanvas: document.getElementById('next-canvas'),
+		verifyBtn: document.getElementById('btn-verify')
+	};
+
+	const btns = {
+		left: document.getElementById('btn-left'),
+		right: document.getElementById('btn-right'),
+		down: document.getElementById('btn-down'),
+		rotateR: document.getElementById('btn-rotate-r'),
+		rotateL: document.getElementById('btn-rotate-l'),
+		hold: document.getElementById('btn-hold'),
+		hard: document.getElementById('btn-hard'),
+		undo: document.getElementById('btn-undo'),
+		redo: document.getElementById('btn-redo')
+	};
+
+	const resultStr = document.getElementById('result');
+
+	const setAllButtonsDisabled = (isDisabled) => {
+		Object.values(btns).forEach(btn => {
+			if (btn) btn.disabled = isDisabled;
+		});
+	};
+
+	const nazotetForm = new NazotetForm('form-container');
+
+	nazotetForm.form.elements['srules_string'].disabled = true;
+
+	const game = new NazotetGame();
+
+	const renderer = new GameRenderer(elements);
+
+	const updateUIState = () => {
+		const state = game.getState();
+
+		if (state.isCleared) {
+			console.log('Puzzle is Valid');
+			resultStr.innerText = 'Valid';
+			setAllButtonsDisabled(true);
+		} else {
+			elements.verifyBtn.textContent = "Verify";
+			elements.verifyBtn.style.backgroundColor = "";
+			elements.verifyBtn.style.borderColor = "";
+		}
+	};
+
+	const handleVerify = () => {
+		nazotetForm.autoComplete();
+		if (nazotetForm.isValid()) {
+			const config = nazotetForm.getConfig();
+			game.reset(config);
+			renderer.init();
+			updateUIState();
+			setAllButtonsDisabled(false);
+			btns.hold.disabled = config.isHoldDisabled;
+			resultStr.innerText = 'Validating';
+			elements.verifyBtn.blur();
+		} else {
+			alert('Form invalid');
+		}
+	};
+
+	const action = (actFn) => {
+		if (!game.gameOver) {
+			actFn();
+
+			updateUIState();
+		}
+	};
+
+	const loop = () => {
+		renderer.render(game.getState());
+		requestAnimationFrame(loop);
+	};
+
+	elements.verifyBtn.addEventListener('click', handleVerify);
+
+	document.addEventListener('keydown', (e) => {
+		if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+
+		const state = game.getState();
+		if (state.gameOver && e.code !== 'KeyR') return;
+
+		if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
+			e.preventDefault();
+		}
+
+		switch(e.code) {
+			case 'ArrowLeft':  action(() => game.move(-1, 0)); break;
+			case 'ArrowRight': action(() => game.move(1, 0)); break;
+			case 'ArrowDown':  action(() => game.move(0, 1)); break;
+			case 'ArrowUp':    action(() => game.rotate(true)); break;
+			case 'KeyZ':       action(() => game.rotate(false)); break; 
+			case 'Space':      action(() => game.hardDrop()); break;
+			case 'ShiftLeft':
+			case 'ShiftRight': 
+			case 'KeyC':       action(() => game.hold()); break;
+
+			case 'KeyR':       handleVerify(); break;
+			case 'KeyU':       action(() => game.undo()); break;
+			case 'KeyI':       action(() => game.redo()); break;
+		}
+	});
+
+	btns.left.addEventListener('click', () => action(() => game.move(-1, 0)));
+	btns.right.addEventListener('click', () => action(() => game.move(1, 0)));
+	btns.down.addEventListener('click', () => action(() => game.move(0, 1)));
+	btns.rotateR.addEventListener('click', () => action(() => game.rotate(true)));
+	btns.rotateL.addEventListener('click', () => action(() => game.rotate(false)));
+	btns.hold.addEventListener('click', () => action(() => game.hold()));
+	btns.hard.addEventListener('click', () => action(() => game.hardDrop()));
+	btns.undo.addEventListener('click', () => action(() => game.undo()));
+	btns.redo.addEventListener('click', () => action(() => game.redo()));
+
+	window.addEventListener('resize', () => {
+		renderer.resize();
+	});
+
+	handleVerify();
+	resultStr.innerText = 'Ready';
+	loop();
+});
+</script>

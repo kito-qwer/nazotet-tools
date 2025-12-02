@@ -1,0 +1,162 @@
+/* --- フォーム部品 --- */
+.form-group {
+	margin-bottom: 10px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+label {
+	width: 120px;
+	font-weight: bold;
+	display: inline-block;
+	flex-shrink: 0;
+}
+
+label[for] {
+	cursor: pointer;
+}
+
+.label-with-checkbox {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-right: 10px;
+	width: 120px;
+}
+
+input[type="checkbox"] {
+	cursor: pointer;
+}
+
+input[type="text"],
+input[type="number"] {
+	flex: 1;
+	padding: 8px;
+	border: 1px solid #ccc;
+}
+
+input[type="number"] {
+	min-width: 60px;
+}
+
+textarea {
+	flex: 1;
+	padding: 8px;
+	border: 1px solid #ccc;
+	resize: vertical;
+}
+
+.uppercase-input {
+	text-transform: none;
+}
+.uppercase-input:not(:placeholder-shown) {
+	text-transform: uppercase;
+}
+
+/* --- グループ枠線 (Fieldset) --- */
+fieldset {
+	border: 1px solid #ddd;
+	margin-bottom: 15px;
+	padding: 10px;
+}
+
+legend {
+	font-weight: bold;
+	color: #555;
+	padding: 0 5px;
+}
+
+/* --- ボタン --- */
+.btn {
+	padding: 10px 20px;
+	border: none;
+	cursor: pointer;
+	font-weight: bold;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	color: white;
+	transition: opacity 0.2s;
+}
+
+.btn:disabled {
+	cursor: not-allowed;
+	color: gray;
+	filter: grayscale(50%);
+	pointer-events: none;
+}
+
+.btn:hover {
+	opacity: 0.9;
+}
+
+.btn-primary { 
+	background-color: #007bff;
+}
+
+.btn-secondary { 
+	background-color: #666;
+}
+
+.rules-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.rule-group {
+	flex: 1;
+	min-width: 200px;
+}
+
+.rule-group.full-width {
+	flex-basis: 100%;
+	max-width: 100%;
+	margin-top: 10px;
+}
+
+/* コンポーネントのレスポンシブ対応 (スマホ向け) */
+@media (max-width: 600px) {
+
+	/* フォーム部品の縦積み */
+	.form-group {
+		display: block;
+		margin-bottom: 15px;
+	}
+
+	.form-group > label {
+		width: 100%;
+		margin-bottom: 5px;
+		display: block;
+	}
+
+	/* グリッドの縦積み */
+	.rules-container {
+		flex-direction: column;
+	}
+
+	.rule-group,
+	.rule-group:last-child {
+		min-width: 0;
+		width: 100%;
+		flex-basis: auto;
+	}
+
+	.form-group:last-child {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.btn {
+		width: 100%;
+		margin-right: 0;
+		padding: 12px;
+	}
+
+	input[type="text"],
+	input[type="number"],
+	textarea {
+		width: 100%;
+	}
+}

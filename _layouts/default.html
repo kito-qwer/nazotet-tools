@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{{ page.title }}</title>
+
+		<link rel="stylesheet" href="{{ '/base.css' | relative_url }}">
+		<link rel="stylesheet" href="{{ '/components.css' | relative_url}}">
+
+		{% if page.css %}
+		{% if page.css.first %}
+		{% for filepath in page.css %}
+		<link rel="stylesheet" href="{{ filepath }}">
+		{% endfor %}
+		{% else %}
+		<link rel="stylesheet" href="{{ page.css }}">
+		{% endif %}
+		{% endif %}
+	</head>
+	<body>
+
+		<main>
+			{{ content }}
+		</main>
+
+	</body>
+</html>
