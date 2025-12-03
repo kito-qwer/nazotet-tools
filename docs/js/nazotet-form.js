@@ -110,7 +110,7 @@ class NazotetForm {
 					name="combo_count" placeholder="0" min="0">
 			</div>
 			<div class="form-group">
-				<label for="${id('srules')}">Special Rules</label>
+				<label for="${id('srules')}">Extra Rules</label>
 				<textarea id="${id('srules')}" name="srules_string"
 					placeholder=
 					"Back-to-Back: 1&#10;Shift-Return for newline"
