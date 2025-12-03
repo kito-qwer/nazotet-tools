@@ -111,6 +111,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const renderer = new GameRenderer(elements);
 
+	const resizeObserver = new ResizeObserver(() => {
+		renderer.resize();
+		renderer.render(game.getState());
+	})
+
+	resizeObserver.observe(elements.gameContainer);
+
 	const updateUIState = () => {
 		const state = game.getState();
 
@@ -130,7 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (nazotetForm.isValid()) {
 			const config = nazotetForm.getConfig();
 			game.reset(config);
-			renderer.init();
+			renderer.resize();
+			renderer.render(game.getState());
 			updateUIState();
 			setAllButtonsDisabled(false);
 			btns.hold.disabled = config.isHoldDisabled;
@@ -192,10 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	btns.hard.addEventListener('click', () => action(() => game.hardDrop()));
 	btns.undo.addEventListener('click', () => action(() => game.undo()));
 	btns.redo.addEventListener('click', () => action(() => game.redo()));
-
-	window.addEventListener('resize', () => {
-		renderer.resize();
-	});
 
 	handleVerify();
 	resultStr.innerText = 'Ready';
