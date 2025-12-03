@@ -479,15 +479,15 @@
 		}
 
 		resize() {
-			// ウィンドウサイズを基準に計算（コンテナ依存だと初期化時に潰れるリスク回避）
-			const w = window.innerWidth - 40;
+			// ウィンドウサイズを基準に計算
+			const w = window.innerWidth - 65;
 			const h = window.innerHeight - 200;
 
 			const totalRows = GameConstants.ROWS; // 23
 			const totalCols = GameConstants.COLS + 8; // 18 (Main 10 + Side 4*2)
 
 			this.blockSize = Math.floor(Math.min(w / totalCols, h / totalRows));
-			this.blockSize = Math.max(15, this.blockSize); // 最小サイズ保証
+			// this.blockSize = Math.max(15, this.blockSize);
 
 			// Hold/Next用のブロックサイズ (小さくする)
 			this.sideBlockSize = Math.floor(this.blockSize * 0.7);

@@ -3,8 +3,19 @@ class NazotetForm {
 		this.container = document.getElementById(containerId);
 		if (!this.container) return;
 
+		let randomid;
+		if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+			 randomid = crypto.randomUUID();
+		} else {
+			// 代替のランダムID生成
+			randomid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+				const r = Math.random() * 16 | 0;
+				const v = c === 'x' ? r : (r & 0x3 | 0x8);
+				return v.toString(16);
+			});
+		}
 		// ID衝突防止用のプレフィックス
-		this.idPrefix = `nazotet-${crypto.randomUUID()}-`;
+		this.idPrefix = `nazotet-${randomid}-`;
 
 		this.render();
 		this.form = this.container.querySelector('form');
