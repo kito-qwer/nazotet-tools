@@ -242,7 +242,7 @@ class NazotetForm {
 			const holdInput = this.form.elements['hold_string'];
 			if (!holdInput.value && !holdInput.disabled) {
 				const holdMatch = comment
-				.match(/^#Q=\[([ILOZTJS])\]\([ILOZTJS]\)[ILOZTJS]/);
+				.match(/^#Q=\[([ILOZTJS])\]\([ILOZTJS]\)[ILOZTJS]*/);
 				if (holdMatch) {
 					holdInput.value = holdMatch[1].toUpperCase();
 				}
